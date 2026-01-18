@@ -12,3 +12,9 @@ docs/
 
 # Dotenv file
 .env
+
+# Ignore all broadcast directories except the root one. its important to leave your broadcast and lib out from bein pushed to your github
+# This is useful for keeping your local broadcast and lib directories private.
+
+broadcast/  
+lib/
