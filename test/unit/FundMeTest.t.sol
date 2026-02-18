@@ -41,8 +41,8 @@ contract FundMeTest is Test {
         //console.log(fundMe.i_owner()) ; // this will print the address of the owner
         //console.log(msg.sender); // this will print the address of the sender
         assertEq(fundMe.getOwner(), msg.sender); // now cause we are using deployscript to run this test, the owner is back to being msg.sender
-        //otherwise,we use * address(this));* // this will check if the owner is the same as the sender, rather than using msg.sender which is a different address and would fail.
-        // Note that it is good to have a couple of tests written before you start refactoring, to avoid breaking anything
+            //otherwise,we use * address(this));* // this will check if the owner is the same as the sender, rather than using msg.sender which is a different address and would fail.
+            // Note that it is good to have a couple of tests written before you start refactoring, to avoid breaking anything
 
         //what can we do to work with addresses outside our system?
         // 1. Unit test
@@ -60,27 +60,29 @@ contract FundMeTest is Test {
     //assertEq(version, 4); // this will check if the version is 4
     //the downside of using the forked test is that it will run a lot of abi codes which will take a lot of time to run and also run a lot of gas
     //here is a better way to put it, we use the HelperConfig contract to get the price feed version and then we use the block.chainid to check which network we are on and then check the version of the price feed
-   
+
     function testPriceFeedVersionIsAccurate() public {
-        if (block.chainid == 11155111) {  // Sepolia chain id
+        if (block.chainid == 11155111) {
+            // Sepolia chain id
             uint256 version = fundMe.getVersion();
             assertEq(version, 4);
-        } else if (block.chainid == 1) {  // Ethereum Mainnet
+        } else if (block.chainid == 1) {
+            // Ethereum Mainnet
             uint256 version = fundMe.getVersion();
             assertEq(version, 6);
-        } else {  // Default or local mock returns, i.e Anvil chain id
+        } else {
+            // Default or local mock returns, i.e Anvil chain id
             uint256 version = fundMe.getVersion();
             assertEq(version, 4); // or whatever your mock is set to
         }
-  }       
-
+    }
 
     function testFundFailsWithoutEnoughETH() public {
         //fundMe.fund{value: 1e17}(); // this will send 0.1 eth to the fund function
         //we expect this to fail because the minimum is 5 usd which is about 0.002 eth
         vm.expectRevert(); //By using this expectRevert, this will expect the next line to revert; and this is euivalent to saying "assert(this txn fails/reverts)".
         fundMe.fund(); // this will send 0 eth to the fund function and therefore revert
-        //uint256 cat = 1; this on the other hand will not make the function fail/revert because enough ETH was sent
+            //uint256 cat = 1; this on the other hand will not make the function fail/revert because enough ETH was sent
     }
 
     function testFundUpdatesFundedDataStructure() public {
@@ -143,21 +145,14 @@ contract FundMeTest is Test {
         uint256 endingOwnerBalance = fundMe.getOwner().balance;
         uint256 endingFundMeBalance = address(fundMe).balance;
         assertEq(endingFundMeBalance, 0);
-        assertEq(
-            startingFundMeBalance + startingOwnerBalance,
-            endingOwnerBalance
-        );
+        assertEq(startingFundMeBalance + startingOwnerBalance, endingOwnerBalance);
     }
 
     function testWithdrawFromMultipleFunders() public funded {
         //Arrange
         uint160 numberOfFunders = 10;
         uint160 startingFunderIndex = 1; // we start from 1 because 0 is already taken by USER in the funded modifier and it reverts
-        for (
-            uint160 i = startingFunderIndex;
-            i < startingFunderIndex + numberOfFunders;
-            i++
-        ) {
+        for (uint160 i = startingFunderIndex; i < startingFunderIndex + numberOfFunders; i++) {
             //we could use the prank cheatcode and the vm.deal cheatcode to create multiple funders addresses that will fund the fundMe contract i.e
             //vm.prank (address(i)); // this will make the next call be from address(i) rather than the default address which is address(this)
             //vm.deal(address(i), SEND_VALUE); // this will give address(i) some starting balance to work with
@@ -176,20 +171,13 @@ contract FundMeTest is Test {
 
         //Assert
         assert(address(fundMe).balance == 0);
-        assert(
-            startingFundMeBalance + startingOwnerBalance ==
-                fundMe.getOwner().balance
-        );
+        assert(startingFundMeBalance + startingOwnerBalance == fundMe.getOwner().balance);
     }
 
     function testWithdrawFromMultipleFundersCheaper() public funded {
         uint160 numberOfFunders = 10;
         uint160 startingFunderIndex = 1; // we start from 1 because 0 is already taken by USER in the funded modifier and it reverts
-        for (
-            uint160 i = startingFunderIndex;
-            i < startingFunderIndex + numberOfFunders;
-            i++
-        ) {
+        for (uint160 i = startingFunderIndex; i < startingFunderIndex + numberOfFunders; i++) {
             //we could use the prank cheatcode and the vm.deal cheatcode to create multiple funders addresses that will fund the fundMe contract i.e
             //vm.prank (address(i)); // this will make the next call be from address(i) rather than the default address which is address(this)
             //vm.deal(address(i), SEND_VALUE); // this will give address(i) some starting balance to work with
@@ -208,10 +196,7 @@ contract FundMeTest is Test {
 
         //Assert
         assert(address(fundMe).balance == 0);
-        assert(
-            startingFundMeBalance + startingOwnerBalance ==
-                fundMe.getOwner().balance
-        );
+        assert(startingFundMeBalance + startingOwnerBalance == fundMe.getOwner().balance);
     }
     // us is calling -> fundMeTest which then -> deploys the FundMe contract
     // refactoring s when you change thr achitechtural i.e structure of your code, without actually changing their functionality.
