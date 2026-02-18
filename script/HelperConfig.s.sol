@@ -23,12 +23,13 @@ contract HelperConfig is Script {
     //these helps us maintain readable codes rather than just using random numbers in our codeS
 
     //We use the struct keyword to hold the configuration for the different networks in anycase we want to add more networks in the future.
+    //recall that a struct is a collection of variables of different types that are grouped together under a single name.
     struct NetworkConfig {
         address priceFeed; //which is just the ETH/USD price feed address
     }
 
     constructor() {
-        //Note that in the recent versions of foundry, you cannot assign a memory struct to a stroage struct variable
+        //Note that in the recent versions of foundry, you cannot assign a memory struct to a storage struct variable
         if (block.chainid == 11155111) {
             // Sepolia chain id
             activeNetworkConfig = getSepoliaEthConfig();
@@ -48,7 +49,7 @@ contract HelperConfig is Script {
         return sepoliaConfig;
     }
 
-    function getMainnetEthConfig() public pure returns (NetworkConfig memory) {
+    function getMainnetEthConfig() public pure returns (NetworkConfig memory) { //memory keyword is used caused its a special type, its note stored in storage.
         NetworkConfig memory ethConfig = NetworkConfig({
             priceFeed: 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419
         });

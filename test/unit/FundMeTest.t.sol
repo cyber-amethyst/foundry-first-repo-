@@ -58,23 +58,22 @@ contract FundMeTest is Test {
     //function testPriceFeedVersionIsAccurate() public view{
     //uint256 version = fundMe.getVersion();
     //assertEq(version, 4); // this will check if the version is 4
-    //the downside of using the forked  test is that it will run a lot of abi codes which will take a lot of time to run and also run a lot of gas
-    //we can also use the block.chainid to check which network we are on and then check the version of the price feed}
-    //Here is a better way to put it
-    function testPriceFeedVersionIsAccurate() public view {
-        uint256 version = fundMe.getVersion();
-
-        if (block.chainid == 1) {
-            // Ethereum Mainnet
-            assertEq(version, 6);
-        } else if (block.chainid == 11155111) {
-            // Sepolia
+    //the downside of using the forked test is that it will run a lot of abi codes which will take a lot of time to run and also run a lot of gas
+    //here is a better way to put it, we use the HelperConfig contract to get the price feed version and then we use the block.chainid to check which network we are on and then check the version of the price feed
+   
+    function testPriceFeedVersionIsAccurate() public {
+        if (block.chainid == 11155111) {  // Sepolia chain id
+            uint256 version = fundMe.getVersion();
             assertEq(version, 4);
-        } else {
-            // Default or local mock returns
+        } else if (block.chainid == 1) {  // Ethereum Mainnet
+            uint256 version = fundMe.getVersion();
+            assertEq(version, 6);
+        } else {  // Default or local mock returns, i.e Anvil chain id
+            uint256 version = fundMe.getVersion();
             assertEq(version, 4); // or whatever your mock is set to
         }
-    }
+  }       
+
 
     function testFundFailsWithoutEnoughETH() public {
         //fundMe.fund{value: 1e17}(); // this will send 0.1 eth to the fund function
@@ -85,7 +84,7 @@ contract FundMeTest is Test {
     }
 
     function testFundUpdatesFundedDataStructure() public {
-        vm.prank(USER); // this will make the next call be from USER address rather than the default address which is address(this)
+        vm.prank(USER); // this will make the next txn call be from USER address rather than the default address which is address(this)
         fundMe.fund{value: SEND_VALUE}();
         //we could also say assert(fundMe.addressToAmountFunded(address(this)) == 10e18);
         uint256 amountFunded = fundMe.getAddressToAmountFunded(USER); // we want to be very explicit in our tests of who is sending what at all times
@@ -151,6 +150,7 @@ contract FundMeTest is Test {
     }
 
     function testWithdrawFromMultipleFunders() public funded {
+        //Arrange
         uint160 numberOfFunders = 10;
         uint160 startingFunderIndex = 1; // we start from 1 because 0 is already taken by USER in the funded modifier and it reverts
         for (

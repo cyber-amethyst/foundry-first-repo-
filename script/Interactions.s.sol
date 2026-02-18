@@ -42,3 +42,5 @@ contract WithdrawFundMe is Script {
         withdrawFundMe(mostRecentlyDeployed);
     }
 }
+//In essence, the interactions file is a child contract of the DeployFundMe script. It is just a list of all the ways we can interact with our contract in a reproducable way.
+//Hence the fund script and the withdraw script are child contracts of the DeployFundMe script
