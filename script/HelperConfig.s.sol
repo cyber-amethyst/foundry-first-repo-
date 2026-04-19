@@ -20,6 +20,7 @@ contract HelperConfig is Script {
     //make a new line and create a constant to pass for the numbers you want to pass in your mock test
     uint8 public constant DECIMALS = 8;
     int256 public constant INITIAL_PRICE = 2000e8;
+
     //these helps us maintain readable codes rather than just using random numbers in our codeS
 
     //We use the struct keyword to hold the configuration for the different networks in anycase we want to add more networks in the future.

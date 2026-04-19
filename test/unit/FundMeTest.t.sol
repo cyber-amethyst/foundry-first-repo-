@@ -41,8 +41,8 @@ contract FundMeTest is Test {
         //console.log(fundMe.i_owner()) ; // this will print the address of the owner
         //console.log(msg.sender); // this will print the address of the sender
         assertEq(fundMe.getOwner(), msg.sender); // now cause we are using deployscript to run this test, the owner is back to being msg.sender
-            //otherwise,we use * address(this));* // this will check if the owner is the same as the sender, rather than using msg.sender which is a different address and would fail.
-            // Note that it is good to have a couple of tests written before you start refactoring, to avoid breaking anything
+        //otherwise,we use * address(this));* // this will check if the owner is the same as the sender, rather than using msg.sender which is a different address and would fail.
+        // Note that it is good to have a couple of tests written before you start refactoring, to avoid breaking anything
 
         //what can we do to work with addresses outside our system?
         // 1. Unit test
@@ -82,7 +82,7 @@ contract FundMeTest is Test {
         //we expect this to fail because the minimum is 5 usd which is about 0.002 eth
         vm.expectRevert(); //By using this expectRevert, this will expect the next line to revert; and this is euivalent to saying "assert(this txn fails/reverts)".
         fundMe.fund(); // this will send 0 eth to the fund function and therefore revert
-            //uint256 cat = 1; this on the other hand will not make the function fail/revert because enough ETH was sent
+        //uint256 cat = 1; this on the other hand will not make the function fail/revert because enough ETH was sent
     }
 
     function testFundUpdatesFundedDataStructure() public {
