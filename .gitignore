@@ -19,3 +19,9 @@ docs/
 broadcast/  
 lib/
 
+# Frontend companion repo (separate git repo, not a submodule)
+html-fund-me-cu/
+
+# Cursor editor config
+.cursor/
+

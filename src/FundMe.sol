@@ -79,7 +79,7 @@ contract FundMe {
         for (
             uint256 funderIndex = 0;
             funderIndex < fundersLength;
-                //This will save gas by avoiding reading s_funders.length on every loop and instead read it once. funderLenght is now a memory variable
+            //This will save gas by avoiding reading s_funders.length on every loop and instead read it once. funderLenght is now a memory variable
             funderIndex++
         ) {
             address funder = s_funders[funderIndex];
