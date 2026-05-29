@@ -18,8 +18,10 @@ error FundMe__NotOwner();
  * @dev Implements Chainlink Price Feeds to convert ETH amounts to USD
  */
 contract FundMe {
+    // TYPE DECLARATIONS
     using PriceConverter for uint256;
 
+    // STORAGE OR STATE VARIABLES
     mapping(address => uint256) private s_addressToAmountFunded;
     address[] private s_funders; // Note that all these s_... are storage functions
     //It is also best practice to make state variables be set to private rather than public. It is more gas efficient
@@ -35,7 +37,8 @@ contract FundMe {
      * @param priceFeed Address of the Chainlink price feed contract
      * @dev The owner is set to the deployer (msg.sender)
      */
-    constructor(address priceFeed) {
+    constructor(address priceFeed) { // this priceFeed address will depend on the actual network we are on.
+    // this is because the price feed address is different for each network. so it helps us not to hardcode any addresses in our code.
         i_owner = msg.sender;
         s_priceFeed = AggregatorV3Interface(priceFeed);
     }
@@ -46,7 +49,7 @@ contract FundMe {
      * @dev Adds the funder to the s_funders array and updates their total funded amount
      */
     function fund() public payable {
-        require(msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD, "You need to spend more ETH!");
+        require(msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD, "You need to send more ETH!");
         // require(PriceConverter.getConversionRate(msg.value) >= MINIMUM_USD, "You need to spend more ETH!");
         s_addressToAmountFunded[msg.sender] += msg.value;
         s_funders.push(msg.sender);
@@ -141,7 +144,7 @@ contract FundMe {
     receive() external payable {
         fund();
     }
-
+// READ ONLY FUNCTIONS  
     /**
      * Creating getter functions
      * View / Pure function will be our 'Getters'

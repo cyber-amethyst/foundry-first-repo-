@@ -1,5 +1,6 @@
 //SPDX-License-Identifier: MIT
-
+// The helpers config helps us not to hardcode any addresses in our code.
+//
 //In this contract, we intend to
 //1. Deploy mocks when on a local Anvil chain
 //2. Keep track of contract addresses across different chain networks
@@ -14,7 +15,7 @@ import {MockV3Aggregator} from "../test/mocks/MockV3Aggregator.sol";
 contract HelperConfig is Script {
     //we want this contract to be able to:
     // deploy mocks when on a local Anvil chain
-    // otherwise, grab the existing address from the live network
+    // otherwise, grab the existing addres.ses from the live networks
     NetworkConfig public activeNetworkConfig;
 
     //make a new line and create a constant to pass for the numbers you want to pass in your mock test
@@ -23,9 +24,9 @@ contract HelperConfig is Script {
 
     //these helps us maintain readable codes rather than just using random numbers in our codeS
 
-    //We use the struct keyword to hold the configuration for the different networks in anycase we want to add more networks in the future.
+    //We use the struct keyword to hold the configuration for the different networks in anycase we want to add more information about the network in the future.
     //recall that a struct is a collection of variables of different types that are grouped together under a single name.
-    struct NetworkConfig {
+    struct NetworkConfig { // A struct is just a special keyword used to create custom types in solidity.
         address priceFeed; //which is just the ETH/USD price feed address
     }
 
@@ -46,13 +47,13 @@ contract HelperConfig is Script {
     function getSepoliaEthConfig() public pure returns (NetworkConfig memory) {
         NetworkConfig memory sepoliaConfig = NetworkConfig({priceFeed: 0x694AA1769357215DE4FAC081bf1f309aDC325306});
         return sepoliaConfig;
-    }
+    }//This is just a placeholder for the sepolia network configuration.
 
     function getMainnetEthConfig() public pure returns (NetworkConfig memory) {
         //memory keyword is used caused its a special type, its note stored in storage.
         NetworkConfig memory ethConfig = NetworkConfig({priceFeed: 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419});
         return ethConfig;
-    }
+    }//This is just a placeholder for the mainnet network configuration.
 
     function getOrCreateAnvilEthConfig() public returns (NetworkConfig memory) {
         if (activeNetworkConfig.priceFeed != address(0)) {
@@ -66,9 +67,9 @@ contract HelperConfig is Script {
         // priceFeed: address(new MockV3Aggregator(8, 2000e8)) // 8 decimals, 2000 USD price
         //});note that a mock contract is just a fake contract that mimics the behaviour of a real contract
         // in that it is real, but it is controlled and predictable by us alone.
-        // Remember to import the new mock contract you plan on using
+        // Remember to import the new mock contract you plan on using i.e the Mock
         //return anvilConfig;
-        vm.startBroadcast();
+        vm.startBroadcast(); //this is how we deploy the mock contract(our own price feed) to the network.
         MockV3Aggregator mockPriceFeed = new MockV3Aggregator(DECIMALS, INITIAL_PRICE); // 8 decimals, 2000 USD price (magic numbers have been replaced with constants)
         vm.stopBroadcast();
 

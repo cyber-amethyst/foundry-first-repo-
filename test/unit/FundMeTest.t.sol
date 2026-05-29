@@ -18,20 +18,21 @@ contract FundMeTest is Test {
     //e.g; vm.txGasPrice(GAS_PRICE);
 
     //uint256 number = 1;
-    function setUp() external {
+    function setUp() external { 
         // this function is run before each test case
         // us-> FundMeTest -> FundMe
         //fundMe = new FundMe(0x694AA1769357215DE4FAC081bf1f309aDC325306);
         //number = 2;
-        DeployFundMe deployFundMe = new DeployFundMe(); // Create an instance of the DeployFundMe script
-        fundMe = deployFundMe.run(); // Call the run function to deploy the FundMe contract
+        DeployFundMe deployFundMe = new DeployFundMe(); // Create an instance of the DeployFundMe script here in our test contract.
+        fundMe = deployFundMe.run(); // Call the run function in deploy to deploy the FundMe contract
         vm.deal(USER, STARTING_BALANCE); // this is a cheatcode that will give the USER address some starting balance to work with
     }
 
     function testMinimumDollarIsFive() public view {
+        // Its not only functions that can be tested, pulic variables as well can be tested.
         //console.log(number) used for writing test cases and in debugging
         //console.log("Hello World"); include this in the test case and when running it, recall to use -vv to specify the visibility of logging
-        //For my version of foundry, i have to use the -vvv before i specify the test flag that i want to run. For eg; forge test -vvv --match-test testPriceFeedVersionIsAccurate(Note to write the natch test in full to avoid errors)
+        //For my version of foundry, i have to use the -vvv before i specify the test flag that i want to run. For eg; forge test -vvv --match-test testPriceFeedVersionIsAccurate(Note to write the match test in full to avoid errors)
 
         //assertEq(number, 2);
         assertEq(fundMe.MINIMUM_USD(), 5e18);
@@ -61,10 +62,11 @@ contract FundMeTest is Test {
     //the downside of using the forked test is that it will run a lot of abi codes which will take a lot of time to run and also run a lot of gas
     //here is a better way to put it, we use the HelperConfig contract to get the price feed version and then we use the block.chainid to check which network we are on and then check the version of the price feed
 
-    function testPriceFeedVersionIsAccurate() public {
+    function testPriceFeedVersionIsAccurate() public view {
         if (block.chainid == 11155111) {
             // Sepolia chain id
             uint256 version = fundMe.getVersion();
+            // console.log("Sepolia version: ", version);
             assertEq(version, 4);
         } else if (block.chainid == 1) {
             // Ethereum Mainnet
@@ -126,13 +128,16 @@ contract FundMeTest is Test {
     }
 
     function testWithdrawWithASingleFunder() public funded {
-        //Arrange
+        //Arrange - this is the setup of the test
         uint256 startingOwnerBalance = fundMe.getOwner().balance;
         uint256 startingFundMeBalance = address(fundMe).balance;
 
-        //Act
+        //Act - this is the actual action that we are testing i.e the withdrawal of funds
         uint256 gasStart = gasleft(); //for instance,  if this is 1000
         //we can use the txGasPrice cheatcode to set the gas price for the next transaction
+        // we are doing this to simulate a real world scenario where gas price is not zero
+        // this is because anvil automayically sets the gas price to 0 by default for testing purposes.
+        // but the real world scenario is that gas price is not zero.
         vm.txGasPrice(GAS_PRICE); // this will set the gas price for the next transaction to 1 gwei
         vm.prank(fundMe.getOwner()); // and this txn spent/ cost 200 gas
         fundMe.withdraw();
@@ -141,12 +146,13 @@ contract FundMeTest is Test {
         uint256 gasUsed = (gasStart - gasEnd) * tx.gasprice; // this will give us the gas used in gwei i.e (1000-800) * 1 gwei = 200 gwei
         console.log(gasUsed);
         //we can also convert this to ether by dividing by 1e9 i.e 200 gwei / 1e9 = 0.0000002 ether
-        //Assert
+        //Assert - this is the assertion that we are making i.e the ending balance of the owner and the fundMe contract should be 0
         uint256 endingOwnerBalance = fundMe.getOwner().balance;
         uint256 endingFundMeBalance = address(fundMe).balance;
-        assertEq(endingFundMeBalance, 0);
+        assertEq(endingFundMeBalance, 0); //because it believes that the fundMe contract should have 0 balance after the withdrawal
         assertEq(startingFundMeBalance + startingOwnerBalance, endingOwnerBalance);
-    }
+    } // The AAA method is good way to help compartmentalize the test code we want to write mentally 
+
 
     function testWithdrawFromMultipleFunders() public funded {
         //Arrange

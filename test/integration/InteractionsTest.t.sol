@@ -26,7 +26,7 @@ contract InteractionsTest is Test {
         // Deploy the interaction contracts
         FundFundMe fundFundMe = new FundFundMe();
         // Fund the FundFundMe contract so it can send ETH
-        vm.deal(address(fundFundMe), 1 ether); // give the contract some ether to work with
+        // vm.deal(address(fundFundMe), 1 ether); // give the contract some ether to work with
         // 1️⃣ Fund the FundMe contract
         fundFundMe.fundFundMe(address(fundMe));
 

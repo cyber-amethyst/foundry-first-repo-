@@ -4,6 +4,7 @@ out = "out"
 libs = ["lib"]
 remappings = [
     "@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/",
-]
+] #we are remapping the chainlink contracts to the chainlink-brownie-contracts folder in our lib folder
+
 # enables foreign function interface for scripts
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
